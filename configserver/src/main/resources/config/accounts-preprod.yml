@@ -1,0 +1,9 @@
+  build:
+    version: "2.0"
+
+  accounts:
+    message: "Welcome to DeeRav Bank  accounts related preprod APIS"
+    contactDetails:
+      name: "Ravi Verma- developer"
+      email: "ravi@gmail.com"
+    onCallSupport: 9211420420

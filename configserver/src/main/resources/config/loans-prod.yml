@@ -1,0 +1,9 @@
+build:
+  version: "1.0"
+
+loans:
+  message: "Welcome to DeeRav Bank  loans related preprod APIS"
+  contactDetails:
+    name: "Ravi Verma- developer"
+    email: "ravi@gmail.com"
+  onCallSupport: 9211420420

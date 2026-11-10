@@ -1,0 +1,11 @@
+server:
+  port: 9000
+build:
+  version: "3.0"
+
+cards:
+  message: "Welcome to DeeRav Bank  cards related local APIS"
+  contactDetails:
+    name: "Rahul Kumar Verma- developer"
+    email: "rahul@gmail.com"
+  onCallSupport: 9211420420

@@ -1,0 +1,12 @@
+server:
+  port: 8090
+
+build:
+  version: "3.0"
+
+loans:
+  message: "Welcome to DeeRav Bank  loan related local APIS"
+  contactDetails:
+    name: "Rahul Kumar Verma- developer"
+    email: "rahul@gmail.com"
+  onCallSupport: 9211420420

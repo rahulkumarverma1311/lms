@@ -1,0 +1,12 @@
+5server:
+  port: 8080
+
+build:
+  version: "3.0"
+
+accounts:
+  message: "Welcome to DeeRav Bank  accounts related local APIS"
+  contactDetails:
+    name: "Rahul Kumar Verma- developer"
+    email: "rahul@gmail.com"
+  onCallSupport: 9211420420

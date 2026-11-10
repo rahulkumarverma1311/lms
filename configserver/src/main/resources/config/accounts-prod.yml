@@ -1,0 +1,9 @@
+build:
+  version: "1.0"
+
+accounts:
+  message: "Welcome to DeeRav Bank  accounts related prod APIS"
+  contactDetails:
+    name: "DeeRav- developer"
+    email: "deerav@gmail.com"
+  onCallSupport: 9211420420
