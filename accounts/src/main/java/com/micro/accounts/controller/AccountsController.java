@@ -3,6 +3,7 @@ package com.micro.accounts.controller;
 import com.micro.accounts.constants.AccountsConstants;
 import com.micro.accounts.dto.*;
 import com.micro.accounts.service.AccountService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +14,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeoutException;
 
 @Tag(
         name = "CRUD Operation For Accounts Service of Verma Bank",
@@ -29,12 +34,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated
 public class AccountsController {
+
+
     @Autowired
     private  AccountService accountService;
+
+
     @Value("${build.version}")
     private  String buildVersion;
+
     @Autowired
     private AccountsContactInfoDto accountsContactInfoDto;
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
     public AccountsController(AccountService accountService){
         this.accountService = accountService;
     }
@@ -144,9 +156,16 @@ public class AccountsController {
             )
     }
     )
+    @Retry(name = "getBuildInfo",fallbackMethod = "getBuildInfoFallBack")
     @GetMapping("/build-info")
-    public ResponseEntity<String> getBuildVersion(){
+    public ResponseEntity<String> getBuildVersion() {
         return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+    }
+
+    public ResponseEntity<String>getBuildInfoFallBack(Throwable throwable){
+        logger.debug("getBuildInfoFallBack() method called");
+
+        return ResponseEntity.ok("0.9");
     }
 
     @GetMapping("/contact-info")
