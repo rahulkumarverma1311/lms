@@ -3,6 +3,12 @@ server:
 spring:
   config:
     import: "optional:configserver:http://localhost:8071/"
+  http:
+    serviceclient:
+      loans:
+        base-url: lb://loans
+      cards:
+        base-url: lb://cards
   application:
     name: "accounts"
   profiles:
