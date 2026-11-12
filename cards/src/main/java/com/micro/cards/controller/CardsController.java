@@ -6,6 +6,7 @@ import com.micro.cards.dtos.CardsDto;
 import com.micro.cards.dtos.ErrorResponseDto;
 import com.micro.cards.dtos.ResponseDto;
 import com.micro.cards.service.CardsService;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -176,11 +177,19 @@ public class CardsController {
                     .body(new ResponseDto(CardsConstants.STATUS_417, CardsConstants.MESSAGE_417_DELETE));
         }
     }
+    @Bulkhead(name = "getBuildVersion",fallbackMethod = "getBuildVersionFallback")
     @GetMapping("/build-info")
-    public ResponseEntity<String> getBuildVersion(){
+    public ResponseEntity<String> getBuildVersion() throws InterruptedException {
+        logger.debug("getBuildVersion() method called ");
+        Thread.sleep(6000);
         return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
     }
 
+    public ResponseEntity<String> getBuildVersionFallback(Throwable throwable){
+        logger.debug("getBuildVersionFallback() method called ");
+
+        return ResponseEntity.status(HttpStatus.OK).body("getBuildVersionFallback method called please try again later");
+    }
     @Operation(
             summary = "Get Contact Info",
             description = "Contact Info details that can be reached out in case of any issues"
