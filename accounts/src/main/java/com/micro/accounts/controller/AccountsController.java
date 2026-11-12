@@ -3,6 +3,7 @@ package com.micro.accounts.controller;
 import com.micro.accounts.constants.AccountsConstants;
 import com.micro.accounts.dto.*;
 import com.micro.accounts.service.AccountService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -168,8 +169,14 @@ public class AccountsController {
         return ResponseEntity.ok("0.9");
     }
 
+    @RateLimiter(name = "contactInfo",fallbackMethod = "getContactInfoFallback")
     @GetMapping("/contact-info")
     public ResponseEntity<AccountsContactInfoDto> contactInfo(){
         return ResponseEntity.status(HttpStatus.OK).body(accountsContactInfoDto);
+    }
+
+    public ResponseEntity<String>getContactInfoFallback(Throwable throwable){
+        logger.debug("rate limiter fall back method called");
+        return ResponseEntity.ok("rate limit cross");
     }
 }
