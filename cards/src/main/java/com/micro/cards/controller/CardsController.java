@@ -181,7 +181,7 @@ public class CardsController {
     @GetMapping("/build-info")
     public ResponseEntity<String> getBuildVersion() throws InterruptedException {
         logger.debug("getBuildVersion() method called ");
-        Thread.sleep(6000);
+//        Thread.sleep(6000);
         return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
     }
 
