@@ -41,6 +41,29 @@ management:
     health:
       probes:
         enabled: true
+  opentelemetry:
+    resource-attributes:
+      service.name: ${spring.application.name}
+      deployment.environment: "uat"
+    logging:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/logs
+    tracing:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/traces
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    metrics:
+      endpoint:
+        url: http://localhost:4318/v1/metrics
+        step: 10s
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 server:
   port: 8071
