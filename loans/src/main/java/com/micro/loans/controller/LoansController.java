@@ -60,7 +60,9 @@ public class LoansController {
     )
     @PostMapping("/create")
     public ResponseEntity<ResponseDto>createLoan(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
+        logger.debug("creating loan for mobile number:-{}",mobileNumber);
         this.loansService.createLoan(mobileNumber);
+        logger.debug("loan created successfully for mobile number:-{}",mobileNumber);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(LoansConstants.STATUS_201,LoansConstants.MESSAGE_201));
     }
     @Operation(
@@ -82,9 +84,11 @@ public class LoansController {
     }
     )
     @GetMapping("/fetch")
-    public ResponseEntity<LoansDto>fetchLoanDetails(@RequestHeader("deerav-correlation-id") String correlationId,@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
-        logger.debug("deerav-correlation-id found: {}",correlationId);
+    public ResponseEntity<LoansDto>fetchLoanDetails(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
+
+        logger.debug("fetching loan details for mobile number:-{}",mobileNumber);
         LoansDto loansDto = this.loansService.fetchLoan(mobileNumber);
+        logger.debug("loan details fetched successfully for mobile number:-{}",mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(loansDto);
     }
     @Operation(
@@ -111,10 +115,13 @@ public class LoansController {
     )
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateLoanDetails(@Valid @RequestBody LoansDto loansDto){
+        logger.debug("updating loan details for mobile number:-{} and loan number:-{}", loansDto.getMobileNumber(),loansDto.getLoanNumber());
         boolean b = this.loansService.updateLoan(loansDto);
         if(b){
+            logger.debug("loan details updated successfully for mobile number:-{} and loan number:-{}", loansDto.getMobileNumber(),loansDto.getLoanNumber());
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(LoansConstants.STATUS_200,LoansConstants.MESSAGE_200));
         }else{
+            logger.debug("updating loan details failed for mobile number:-{} and loan number:-{}", loansDto.getMobileNumber(),loansDto.getLoanNumber());
             return ResponseEntity
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body(new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_UPDATE));
@@ -146,12 +153,15 @@ public class LoansController {
     public ResponseEntity<ResponseDto> deleteLoanDetails(@RequestParam
                                                          @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                          String mobileNumber) {
+        logger.debug("deleting loan details for mobile number:-{}",mobileNumber);
         boolean isDeleted = loansService.deleteLoan(mobileNumber);
         if(isDeleted) {
+            logger.debug("loan details deleted successfully for mobile number:-{}",mobileNumber);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDto(LoansConstants.STATUS_200, LoansConstants.MESSAGE_200));
         }else{
+            logger.debug("deleting loan details failed for mobile number:-{}",mobileNumber);
             return ResponseEntity
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body(new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_DELETE));

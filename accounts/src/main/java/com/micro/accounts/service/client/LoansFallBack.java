@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class LoansFallBack {
 
 
-    public ResponseEntity<LoansDto> fetchLoanDetails(String correlationId,String mobileNumber){
+    public ResponseEntity<LoansDto> fetchLoanDetails(String mobileNumber){
         return null;
     }
 }

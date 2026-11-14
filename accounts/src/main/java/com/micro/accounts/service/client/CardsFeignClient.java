@@ -12,5 +12,5 @@ import org.springframework.web.service.annotation.HttpExchange;
 @HttpExchange("/api")
 public interface CardsFeignClient {
     @GetExchange(value = "/fetch",accept = "application/json")
-   ResponseEntity<CardsDto> fetchCardDetails(@RequestHeader("deerav-correlation-id") String correlationId, @RequestParam String mobileNumber);
+   ResponseEntity<CardsDto> fetchCardDetails(@RequestParam String mobileNumber);
 }

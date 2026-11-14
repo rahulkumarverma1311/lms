@@ -62,7 +62,9 @@ public class AccountsController {
     )
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> createAccount(@Valid @RequestBody CustomerDto customerDto) {
+        logger.info("creating account for mobile number :- {}",customerDto.getMobileNumber());
         this.accountService.createAccount(customerDto);
+        logger.info("Account created successfully  for mobile number:- {}",customerDto.getMobileNumber());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDto(AccountsConstants.STATUS_201, AccountsConstants.MESSAGE_201));
@@ -78,6 +80,7 @@ public class AccountsController {
     )
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDto> fetchAccountDetails(@RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile Number Must Have 10 Digit") String mobileNumber) {
+        logger.info("fetching account details for mobile number:- {}",mobileNumber);
         CustomerDto customerDto = this.accountService.fetchAccount(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(customerDto);
     }
@@ -103,10 +106,13 @@ public class AccountsController {
             )})
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody CustomerDto customerDto) {
+        logger.info("updating account details for mobile number:-{}",customerDto.getMobileNumber());
         Boolean b = this.accountService.updateAccount(customerDto);
         if (b) {
+            logger.info("account details updated successfully for mobile number:-{}",customerDto.getMobileNumber());
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.MESSAGE_200));
         } else {
+            logger.info("update account details failed for mobile number:-{}",customerDto.getMobileNumber());
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseDto(AccountsConstants.STATUS_417, AccountsConstants.MESSAGE_417_UPDATE));
         }
     }
@@ -130,10 +136,14 @@ public class AccountsController {
             )})
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDto> deleteAccountDetails(@RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile Number Must Have 10 Digit") String mobileNumber) {
+        logger.info("deleting account details for mobile number:-{}",mobileNumber);
         boolean b = this.accountService.deleteAccount(mobileNumber);
         if (b) {
+
+            logger.info("account details deleted successfully for mobile number:-{}",mobileNumber);
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.MESSAGE_200));
         } else {
+            logger.info("delete account details failed for mobile number:-{}",mobileNumber);
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseDto(AccountsConstants.STATUS_417, AccountsConstants.MESSAGE_417_DELETE));
         }
     }

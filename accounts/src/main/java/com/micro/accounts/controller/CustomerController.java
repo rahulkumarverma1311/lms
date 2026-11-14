@@ -31,10 +31,10 @@ public class CustomerController {
 
     @GetMapping("/fetchCustomerDetails")
     public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(
-            @RequestHeader("deerav-correlation-id") String correlationId,
             @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile Number Must Have 10 Digit") String mobileNumber){
-        logger.debug("deerav-correlation-id found: {}",correlationId);
-        CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetails(mobileNumber,correlationId);
+        logger.info("fetching customer details for customer mobile number :- {}",mobileNumber);
+        CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetails(mobileNumber);
+        logger.info("customer details fetched successfully for mobile number :- {}",mobileNumber);
         return ResponseEntity.ok(customerDetailsDto);
 
     }

@@ -1,6 +1,8 @@
 spring:
   application:
     name: gatewayserver
+  reactor:
+    context-propagation: auto
   config:
     import: "optional:configserver:http://localhost:8071/"
   cloud:
@@ -63,7 +65,7 @@ info:
 
 logging:
   pattern:
-    console: ${CONSOLE_LOG_PATTERN:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %cyan(%msg%n)}
+    console: ${CONSOLE_LOG_PATTERN:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) %magenta([traceId=%X{traceId:-},spanId=%X{spanId:-}])- %cyan(%msg%n)}
   level:
     com:
       micro:

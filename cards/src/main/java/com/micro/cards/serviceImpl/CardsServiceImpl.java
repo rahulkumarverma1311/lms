@@ -8,7 +8,10 @@ import com.micro.cards.exceptions.ResourceNotFoundException;
 import com.micro.cards.mepper.CardsMapper;
 import com.micro.cards.repository.CardsRepository;
 import com.micro.cards.service.CardsService;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,7 +19,10 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class CardsServiceImpl implements CardsService {
+
+    private static final Logger log = LoggerFactory.getLogger(CardsServiceImpl.class);
     private final CardsRepository cardsRepository;
+    private final MeterRegistry meterRegistry;
 
     /**
      * @param mobileNumber - Mobile Number of the Customer
@@ -28,6 +34,7 @@ public class CardsServiceImpl implements CardsService {
             throw new CardAlreadyExistException("Card already registered with given mobileNumber "+mobileNumber);
         }
         cardsRepository.save(createNewCard(mobileNumber));
+        meterRegistry.counter("cards.operation","operation","created").increment();
     }
 
     /**
@@ -57,6 +64,7 @@ public class CardsServiceImpl implements CardsService {
         Cards cards = cardsRepository.findByMobileNumber(mobileNumber).orElseThrow(
                 () -> new ResourceNotFoundException("Card", "mobileNumber", mobileNumber)
         );
+        log.debug("cards details fetched successfully for mobile number:- {}",mobileNumber);
         return CardsMapper.mapToCardsDto(cards, new CardsDto());
     }
 
@@ -71,6 +79,7 @@ public class CardsServiceImpl implements CardsService {
                 () -> new ResourceNotFoundException("Card", "CardNumber", cardsDto.getCardNumber()));
         CardsMapper.mapToCards(cardsDto, cards);
         cardsRepository.save(cards);
+        meterRegistry.counter("cards.operation","operation","updated").increment();
         return  true;
     }
 
@@ -84,6 +93,7 @@ public class CardsServiceImpl implements CardsService {
                 () -> new ResourceNotFoundException("Card", "mobileNumber", mobileNumber)
         );
         cardsRepository.deleteById(cards.getCardId());
+        meterRegistry.counter("cards.operation","operation","deleted").increment();
         return true;
     }
 }

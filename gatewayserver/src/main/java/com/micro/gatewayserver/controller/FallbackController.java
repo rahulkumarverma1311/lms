@@ -1,5 +1,7 @@
 package com.micro.gatewayserver.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,23 +16,31 @@ import java.util.concurrent.TimeoutException;
 
 @RestController
 public class FallbackController {
+
+    private static final Logger log  = LoggerFactory.getLogger(FallbackController.class);
+
     @RequestMapping("/contactSupport")
-    public Mono<ResponseEntity<String>> contactSupport(ServerWebExchange exchange) {
-        Throwable ex = exchange.getAttribute(ServerWebExchangeUtils.CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR);
-
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        for (Throwable t = ex; t != null; t = t.getCause()) {
-            if (t instanceof TimeoutException) {
-                status = HttpStatus.GATEWAY_TIMEOUT;           // 504 after the time limit
-                break;
-            }
-            if (t instanceof CallNotPermittedException) {
-                status = HttpStatus.SERVICE_UNAVAILABLE;       // 503, circuit is open
-                break;
-            }
-        }
-
-        return Mono.just(ResponseEntity.status(status)
-                .body("An error occurred please contact to support team"));
+    public Mono<String> contactSupport() {
+        log.warn("Circuit breaker fallback triggered, routing request to contactSupport");
+        return Mono.just("An error occurred. Please try after some time or contact support team!!!");
     }
+//    @RequestMapping("/contactSupport")
+//    public Mono<ResponseEntity<String>> contactSupport(ServerWebExchange exchange) {
+//        Throwable ex = exchange.getAttribute(ServerWebExchangeUtils.CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR);
+//
+//        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+//        for (Throwable t = ex; t != null; t = t.getCause()) {
+//            if (t instanceof TimeoutException) {
+//                status = HttpStatus.GATEWAY_TIMEOUT;           // 504 after the time limit
+//                break;
+//            }
+//            if (t instanceof CallNotPermittedException) {
+//                status = HttpStatus.SERVICE_UNAVAILABLE;       // 503, circuit is open
+//                break;
+//            }
+//        }
+//
+//        return Mono.just(ResponseEntity.status(status)
+//                .body("An error occurred please contact to support team"));
+//    }
 }

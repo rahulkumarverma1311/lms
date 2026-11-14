@@ -13,5 +13,5 @@ import org.springframework.web.service.annotation.HttpExchange;
 @HttpExchange("/api")
 public interface LoansFeignClient {
     @GetExchange(value = "/fetch",accept = "application/json")
-    ResponseEntity<LoansDto> fetchLoanDetails(@RequestHeader("deerav-correlation-id") String correlationId,@RequestParam String mobileNumber);
+    ResponseEntity<LoansDto> fetchLoanDetails(@RequestParam String mobileNumber);
 }

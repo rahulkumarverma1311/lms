@@ -73,7 +73,9 @@ public class CardsController {
     public ResponseEntity<ResponseDto> createCard(@Valid @RequestParam
                                                   @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                   String mobileNumber) {
+        logger.debug("creating card for mobile number:-{}",mobileNumber);
         cardsService.createCard(mobileNumber);
+        logger.debug("card created successfully for mobile number:-{}",mobileNumber);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDto(CardsConstants.STATUS_201, CardsConstants.MESSAGE_201));
@@ -98,10 +100,9 @@ public class CardsController {
     })
     @GetMapping("/fetch")
     public ResponseEntity<CardsDto> fetchCardDetails(
-            @RequestHeader("deerav-correlation-id") String correlationId,@RequestParam
-                                                     @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
+            @RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                      String mobileNumber) {
-        logger.debug("deerav-correlation-id found: {}",correlationId);
+        logger.debug("fetching cards details for mobile number:- {}",mobileNumber);
         CardsDto cardsDto = cardsService.fetchCard(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
     }
@@ -129,12 +130,15 @@ public class CardsController {
     })
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateCardDetails(@Valid @RequestBody CardsDto cardsDto) {
+        logger.debug("updating card details for mobile number :-{} and card number:- {}",cardsDto.getMobileNumber(),cardsDto.getCardNumber());
         boolean isUpdated = cardsService.updateCard(cardsDto);
         if(isUpdated) {
+            logger.debug("card details updated successfully for mobile number :-{} and card number:- {}",cardsDto.getMobileNumber(),cardsDto.getCardNumber());
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDto(CardsConstants.STATUS_200, CardsConstants.MESSAGE_200));
         }else{
+            logger.debug("card details update failed for mobile number :-{} and card number:- {}",cardsDto.getMobileNumber(),cardsDto.getCardNumber());
             return ResponseEntity
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body(new ResponseDto(CardsConstants.STATUS_417, CardsConstants.MESSAGE_417_UPDATE));
@@ -166,12 +170,15 @@ public class CardsController {
     public ResponseEntity<ResponseDto> deleteCardDetails(@RequestParam
                                                          @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                          String mobileNumber) {
+        logger.debug("deleting cards details for mobile number:-{}",mobileNumber);
         boolean isDeleted = cardsService.deleteCard(mobileNumber);
         if(isDeleted) {
+            logger.debug("cards details deleted successfully for mobile number:-{}",mobileNumber);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDto(CardsConstants.STATUS_200, CardsConstants.MESSAGE_200));
         }else{
+            logger.debug("cards details deleting failed for mobile number:-{}",mobileNumber);
             return ResponseEntity
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body(new ResponseDto(CardsConstants.STATUS_417, CardsConstants.MESSAGE_417_DELETE));

@@ -8,8 +8,8 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8071"
   datasource:
-#    url: jdbc:mysql://localhost:3306/loansdb
-    url: jdbc:mysql://host.docker.internal:3306/loansdb
+    url: jdbc:mysql://localhost:3306/loansdb
+#    url: jdbc:mysql://host.docker.internal:3306/loansdb
     username: root
     password: root
   jpa:
@@ -89,7 +89,7 @@ info:
 
 logging:
   pattern:
-    console: ${CONSOLE_LOG_PATTERN:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %cyan(%msg%n)}
+    console: ${CONSOLE_LOG_PATTERN:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) %magenta([traceId=%X{traceId:-},spanId=%X{spanId:-}])- %cyan(%msg%n)}
   level:
     com:
       micro:
