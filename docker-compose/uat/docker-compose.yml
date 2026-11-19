@@ -143,6 +143,18 @@ services:
     extends:
       service: network-deploy-service
       file: common-config.yml
+  grafana-lgtm:
+    image: 'grafana/otel-lgtm'
+    container_name: grafana-lgtm-ms
+    ports:
+      - '3000:3000'
+      - '4317:4317'
+      - '4318:4318'
+    volumes:
+      - grafana-lgtm-data:/data
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
   configserver:
     image: "deerav/configserver:${IMAGE_TAG:-s9}"
     container_name: configserver-ms
