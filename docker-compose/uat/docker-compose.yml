@@ -132,6 +132,20 @@
 
 name: deerav-microservices
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.7.3
+    container_name: keycloak
+    ports:
+      - "127.0.0.1:7080:8080"
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "${KEYCLOAK_ADMIN:-admin}"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD:-admin}"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    command: "start-dev"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
   redis:
     image: redis
     ports:
@@ -191,8 +205,8 @@ services:
   accounts:
     image: "deerav/accounts:${IMAGE_TAG:-s9}"
     container_name: accounts-ms
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
     healthcheck:
       test: [ "CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /actuator/health/readiness HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q '\"status\":\"UP\"' <&3" ]
       interval: 10s
@@ -211,8 +225,8 @@ services:
   loans:
     image: "deerav/loans:${IMAGE_TAG:-s9}"
     container_name: loans-ms
-    ports:
-      - "8090:8090"
+#    ports:
+#      - "8090:8090"
     healthcheck:
       test: [ "CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8090 && printf 'GET /actuator/health/readiness HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q '\"status\":\"UP\"' <&3" ]
       interval: 10s
@@ -231,8 +245,8 @@ services:
   cards:
     image: "deerav/cards:${IMAGE_TAG:-s9}"
     container_name: cards-ms
-    ports:
-      - "9000:9000"
+#    ports:
+#      - "9000:9000"
     healthcheck:
       test: [ "CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /actuator/health/readiness HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q '\"status\":\"UP\"' <&3" ]
       interval: 10s
@@ -267,6 +281,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_DATE_REDIS_TIMEOUT: 1S
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:8080/realms/master/protocol/openid-connect/certs"
 
     extends:
       file: common-config.yml
@@ -274,3 +289,8 @@ services:
 networks:
   deerav:
     driver: bridge
+
+
+volumes:
+  grafana-lgtm-data:
+  keycloak_data:
