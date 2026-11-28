@@ -8,4 +8,6 @@ public interface AccountService {
     Boolean updateAccount(CustomerDto customerDto);
     Boolean deleteAccount(String mobileNumber);
 
+    Boolean updateCommunicationStatus(Long accountNumber);
+
 }

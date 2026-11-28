@@ -38,4 +38,9 @@ public class CustomerController {
         return ResponseEntity.ok(customerDetailsDto);
 
     }
+
+    @GetMapping("/email")
+    public ResponseEntity<String> getCustomerEmail(@PathVariable String mobileNumber){
+        return ResponseEntity.ok(customerService.getCustomerEmailByMobileNumber(mobileNumber));
+    }
 }

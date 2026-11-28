@@ -6,6 +6,7 @@
       <list>
         <option value="$PROJECT_DIR$/cards/pom.xml" />
         <option value="$PROJECT_DIR$/loans/pom.xml" />
+        <option value="$PROJECT_DIR$/message/pom.xml" />
         <option value="$PROJECT_DIR$/accounts/pom.xml" />
         <option value="$PROJECT_DIR$/configserver/pom.xml" />
         <option value="$PROJECT_DIR$/eurekaserver/pom.xml" />
@@ -13,7 +14,5 @@
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_21_PREVIEW" project-jdk-name="openjdk-25" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/out" />
-  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="openjdk-25" project-jdk-type="JavaSDK" />
 </project>

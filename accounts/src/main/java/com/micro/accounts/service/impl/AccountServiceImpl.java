@@ -2,6 +2,7 @@ package com.micro.accounts.service.impl;
 
 import com.micro.accounts.constants.AccountsConstants;
 import com.micro.accounts.dto.AccountsDto;
+import com.micro.accounts.dto.AccountsMessageDto;
 import com.micro.accounts.dto.CustomerDto;
 import com.micro.accounts.entity.Accounts;
 import com.micro.accounts.entity.Customer;
@@ -16,6 +17,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
     private AccountsRepository accountsRepository;
     private CustomerRepository customerRepository;
     private MeterRegistry meterRegistry;
-
+    private StreamBridge streamBridge;
     @Override
     public void createAccount(CustomerDto customerDto) {
         log.debug("creating account with mobile number , name , email :- {},{},{}",customerDto.getMobileNumber(),customerDto.getName(),customerDto.getEmail());
@@ -47,6 +49,7 @@ public class AccountServiceImpl implements AccountService {
         Accounts newAccount = this.accountsRepository.save(createNewAccount(savedCustomer));
         log.debug("account created successfully  with mobile number , name , email :- {},{},{}",customerDto.getMobileNumber(),customerDto.getName(),customerDto.getEmail());
         meterRegistry.counter("accounts.operation","operation","created").increment();
+        sendCommunication(newAccount,savedCustomer);
     }
 
     private Accounts createNewAccount(Customer customer) {
@@ -101,5 +104,25 @@ public class AccountServiceImpl implements AccountService {
         log.debug("deleting account details for mobile number:-{}",mobileNumber);
         meterRegistry.counter("accounts.operation","operation","deleted").increment();
         return true;
+    }
+
+    @Override
+    public Boolean updateCommunicationStatus(Long accountNumber) {
+        boolean isUpdated = false;
+        if(accountNumber != null) {
+            Accounts accounts = this.accountsRepository.findById(accountNumber).orElseThrow(() -> new ResourceNotFoundException("Account", "Account number", accountNumber.toString()));
+            accounts.setCommunicationSw(true);
+            accountsRepository.save(accounts);
+            isUpdated = true;
+        }
+        return isUpdated;
+    }
+
+
+    private void sendCommunication(Accounts accounts,Customer customer){
+        AccountsMessageDto accountsMessageDto = new AccountsMessageDto(accounts.getAccountNumber(),customer.getName(),customer.getEmail(),customer.getMobileNumber());
+        log.info("sending message details:-{}",accountsMessageDto);
+        boolean send = streamBridge.send("sendCommunication-out-0", accountsMessageDto);
+        log.info("is message send successfully:-{}",send);
     }
 }

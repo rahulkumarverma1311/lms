@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `cards` (
   `card_type` varchar(100) NOT NULL,
   `total_limit` int NOT NULL,
   `amount_used` int NOT NULL,
+  `communicatin_sw` BOOLEAN,
   `available_amount` int NOT NULL,
   `created_at` date NOT NULL,
   `created_by` varchar(20) NOT NULL,

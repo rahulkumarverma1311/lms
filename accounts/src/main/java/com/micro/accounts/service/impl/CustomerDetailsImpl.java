@@ -51,4 +51,10 @@ public class CustomerDetailsImpl implements CustomerService {
         }
         return customerDetailsDto;
     }
+
+    @Override
+    public String getCustomerEmailByMobileNumber(String mobileNumber) {
+        Customer customer = this.customerRepository.findByMobileNumber(mobileNumber).orElseThrow(() -> new ResourceNotFoundException("Customer", "Mobile Number", mobileNumber));
+        return customer.getEmail();
+    }
 }
